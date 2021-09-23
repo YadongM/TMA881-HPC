@@ -27,7 +27,6 @@ main(
     printf("error opening file\n");
     return -1;
   }
-    
 
 
   // When writing we pass the size of one array element and the number of
@@ -47,6 +46,8 @@ main(
   // elements that we want to write.
   fread((void*) b, sizeof(int), 8, file);
   fclose(file);
+
+  
 
   printf("read after first write: ");
   for ( int ix = 0; ix < 7; ++ix )
