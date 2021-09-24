@@ -51,23 +51,23 @@ main(
   fclose(file);
 
 
-  file = fopen("test_file.txt", "a");
-  if ( file == NULL ) {
-    printf("error opening file\n");
-    return -1;
-  }
-  // Buffering for text files can, in some situations, be best linewise. For
-  // bianry data, if you tweak you write size, it can make sense to disable
-  // buffering.
-  // _IOFBF full buffering
-  // _IOLBF line buffering
-  // _IONBF no buffering
-  setvbuf(file, NULL, _IOLBF, BUFSIZ);
+  // file = fopen("test_file.txt", "a");
+  // if ( file == NULL ) {
+  //   printf("error opening file\n");
+  //   return -1;
+  // }
+  // // Buffering for text files can, in some situations, be best linewise. For
+  // // bianry data, if you tweak you write size, it can make sense to disable
+  // // buffering.
+  // // _IOFBF full buffering
+  // // _IOLBF line buffering
+  // // _IONBF no buffering
+  // setvbuf(file, NULL, _IOLBF, BUFSIZ);
 
-  for ( int ix = 0; ix < 10; ++ix )
-    fprintf(file, "line %i\n", ix);
+  // for ( int ix = 0; ix < 10; ++ix )
+  //   fprintf(file, "line %i\n", ix);
 
-  fclose(file);
+  // fclose(file);
 
   return 0;
 }
