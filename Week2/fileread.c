@@ -57,6 +57,9 @@ main(
 
   int c[] = {34, 55, 89, 144};
 
+
+
+
   // When appending to a file, the file position indicator is placed at the end
   // of the file.
   file =  fopen("test_file.dat", "a");
@@ -68,6 +71,11 @@ main(
   fclose(file);
 
 
+
+
+
+
+
   file =  fopen("test_file.dat", "r");
   if ( file == NULL ) {
     printf("error opening file\n");
@@ -75,6 +83,10 @@ main(
   }
   fread((void*) b, sizeof(int), 12, file);
   fclose(file);
+
+
+
+
 
   printf("read after second write: ");
   for ( int ix = 0; ix < 11; ++ix )
@@ -89,6 +101,9 @@ main(
   // r+ does not overwrite existing file
   // w+ overwrites existing file
   // a+ appends to existing file
+
+
+  
   file =  fopen("test_file.dat", "r+");
   if ( file == NULL ) {
     printf("error opening file\n");
