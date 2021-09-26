@@ -29,7 +29,9 @@ proj1 : proj1.c
 
 
 valgrind_test : vandg.c
-	gcc -o $@ $< -Oo -g
+	gcc -o $@ $< -O0 -g
+
+
 
 
 
