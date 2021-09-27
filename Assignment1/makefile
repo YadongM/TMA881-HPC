@@ -5,13 +5,14 @@ all : proj1O0.s proj1O1.s proj1O2.s proj1O3.s proj1Os.s proj1Og.s \
 	  indirect_addressing_1_0 indirect_addressing_1k_0 indirect_addressing_2_0\
 	  indirect_addressing_1_2 indirect_addressing_1k_2 indirect_addressing_2_2\
 	  indirect_addressing_1_2m indirect_addressing_1k_2m indirect_addressing_2_2m\
+	  data_dependencyO0 data_dependencyO2 data_dependencyO2n\
+	  wr_hdd wr_ssd
 
 
 
 
 proj1O0.s : proj1.c
 	gcc -S -fverbose-asm $< -O0 -o $@
-
 
 proj1O1.s : proj1.c
 	gcc -S -fverbose-asm $< -O1 -o $@
@@ -21,7 +22,6 @@ proj1O2.s : proj1.c
 
 proj1O3.s : proj1.c
 	gcc -S -fverbose-asm $< -O3 -o $@
-
 
 proj1Os.s : proj1.c
 	gcc -S -fverbose-asm $< -Os -o $@
@@ -101,12 +101,20 @@ indirect_addressing_1k_2m : indirect_addressing_1k.c
 indirect_addressing_2_2m : indirect_addressing_2.c
 	gcc -o $@ $< -O2  -march=native
 
+data_dependencyO0 : data_dependency.c
+	gcc -o $@ $< -O0
 
+data_dependencyO2 : data_dependency.c
+	gcc -o $@ $< -O2
 
+data_dependencyO2n : data_dependency.c
+	gcc -o $@ $< -O2 -march=native
 
+wr_hdd : wr_hdd.c
+	gcc -o $@ $< -O2
 
-
-
+wr_ssd : wr_ssd.c
+	gcc -o $@ $< -O2
 
 
 
