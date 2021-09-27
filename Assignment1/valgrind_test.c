@@ -20,7 +20,7 @@ main(
     printf("%d\n", sum);
 
     free(as);
-    free(as);
+    // free(as);
 
 
     }
