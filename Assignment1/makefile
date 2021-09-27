@@ -1,6 +1,6 @@
 .PHONY : all
 all : proj1O0.s proj1O1.s proj1O2.s proj1O3.s proj1Os.s proj1Og.s \
-      proj1
+      proj1 valgrind_test gdb_test
 
 proj1O0.s : proj1.c
 	gcc -S -fverbose-asm $< -O0 -o $@
@@ -28,10 +28,11 @@ proj1 : proj1.c
 	gcc -o $@ $< -O0 -g
 
 
-valgrind_test : vandg.c
+valgrind_test : valgrind_test.c
 	gcc -o $@ $< -O0 -g
 
-
+gdb_test : gdb_test.c
+	gcc -o $@ $< -O0 -g
 
 
 
