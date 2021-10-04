@@ -13,8 +13,6 @@ int main(int argc, char *argv[]) {
 
     // TODO: computer distance
 
-    //balabalabala
-
     fclose (pFile);
     return 0;
 }
