@@ -11,6 +11,21 @@
 // A GLOBAL VAR FOR USER DEFINE BATCH_SIZE
 #define BATCH_SIZE 3
 
+void load_batch(int (*batch)[3], size_t size, FILE* file)
+{
+    char per_line[25]; // for storing a line's info
+    char temp_str[7]; // for string to integer
+    for (size_t line = 0; line < size; line++){
+        fgets(per_line, 25, file);
+        for (size_t ix = 0; ix < 3; ++ix) {
+            memcpy(temp_str, &per_line[ix * 8], 3);
+            memcpy(temp_str+3, &per_line[ix * 8 + 4], 3);
+            temp_str[6] = '\0';
+            batch[line][ix] = (short)atoi(temp_str);
+        }
+    }
+}
+
 int main(int argc, char* argv[])
 {
     // counter vector for tracking counted numbers
@@ -46,7 +61,7 @@ int main(int argc, char* argv[])
     size_t batch_num;
     size_t last_batch_size = line_num % BATCH_SIZE;
     batch_num = (last_batch_size == 0) ? line_num/BATCH_SIZE : line_num/BATCH_SIZE + 1;
-    size_t batch_size = (batch_num==1) ? line_num : BATCH_SIZE;
+    size_t batch_size = BATCH_SIZE;
     size_t cur_batch_size;
     printf("Batch size = %d\nBatch num = %d\n", batch_size, batch_num);
 
@@ -56,8 +71,6 @@ int main(int argc, char* argv[])
     int (*batch_2)[3] = (int (*)[3])malloc(batch_size * sizeof(int[3]));
     fseek(file, 0, SEEK_SET); // to the start of the file
     
-    char per_line[25]; // for storing a line's info
-    char temp_str[7]; // for string to integer
     // Outer loop
     for (size_t batch_out = 0; batch_out < batch_num; batch_out++){
         // check if it is the last batch
@@ -72,15 +85,7 @@ int main(int argc, char* argv[])
         fseek(file, file_cursor, SEEK_SET);
 
         // prepare batch_1 for outer loop
-        for (size_t line = 0; line < cur_batch_size; line++){
-            fgets(per_line, 25, file);
-            for (size_t ix = 0; ix < 3; ++ix) {
-                memcpy(temp_str, &per_line[ix * 8], 3);
-                memcpy(temp_str+3, &per_line[ix * 8 + 4], 3);
-                temp_str[6] = '\0';
-                batch_1[line][ix] = (short)atoi(temp_str);
-            }
-        } // end of prepare batch_1
+        load_batch(batch_1, cur_batch_size, file);
 
         // FOR TESTING (delete later) print batch_1 
         for (size_t line = 0; line < batch_size; line++){
@@ -101,16 +106,7 @@ int main(int argc, char* argv[])
                 cur_batch_size = last_batch_size;
             }
             printf("\tInner loop: %d\n", batch_in); // FOR TESTING (delete later)
-            // prepare batch_2 for inner loop
-            for (size_t line = 0; line < cur_batch_size; line++){
-                fgets(per_line, 25, file);
-                for (size_t ix = 0; ix < 3; ++ix) {
-                    memcpy(temp_str, &per_line[ix * 8], 3);
-                    memcpy(temp_str+3, &per_line[ix * 8 + 4], 3);
-                    temp_str[6] = '\0';
-                    batch_2[line][ix] = (short)atoi(temp_str);
-                }
-            } // end of prepare batch_2
+            load_batch(batch_2, cur_batch_size, file);
 
             // FOR TESTING (delete later) print batch_2 
             for (size_t line = 0; line < batch_size; line++){
