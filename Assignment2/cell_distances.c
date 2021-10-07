@@ -26,6 +26,31 @@ void load_batch(int (*batch)[3], size_t size, FILE* file)
     }
 }
 
+short calculate_distance(short *Num_1, short *Num_2){
+    float temp = sqrt((Num_1[0] - Num_2[0]) * (Num_1[0] - Num_2[0])
+        + (Num_1[1] - Num_2[1]) * (Num_1[1] - Num_2[1])
+        + (Num_1[2] - Num_2[2]) * (Num_1[2] - Num_2[2]));
+    return (short)(temp / 10 + 0.5);
+}
+
+void self_distance(int (*Batch)[3], size_t len, size_t *count){
+    for ( size_t ix = 0; ix < len - 1; ix++) {
+        for ( size_t jx = ix + 1; jx < len; jx++) {
+            short distance = calculate_distance(Batch[ix], Batch[jx]);
+            count[distance] += 1;
+    }
+  }
+}
+
+void double_distance(int (*Batch_1)[3], int (*Batch_2)[3], size_t len_1, size_t len_2, size_t *count){
+    for ( size_t ix = 0; ix < len_1; ix++) {
+        for ( size_t jx = 0; jx < len_2; jx++) {
+            short distance = calculate_distance(Batch_1[ix], Batch_2[jx]);
+            count[distance] += 1;
+    }
+  }
+}
+
 int main(int argc, char* argv[])
 {
     // counter vector for tracking counted numbers
@@ -62,7 +87,6 @@ int main(int argc, char* argv[])
     size_t last_batch_size = line_num % BATCH_SIZE;
     batch_num = (last_batch_size == 0) ? line_num/BATCH_SIZE : line_num/BATCH_SIZE + 1;
     size_t batch_size = BATCH_SIZE;
-    size_t cur_batch_size;
     printf("Batch size = %d\nBatch num = %d\n", batch_size, batch_num);
 
     // allocate memory for storing read lines
@@ -73,10 +97,11 @@ int main(int argc, char* argv[])
     
     // Outer loop
     for (size_t batch_out = 0; batch_out < batch_num; batch_out++){
+        size_t batch_size1;
         // check if it is the last batch
-        cur_batch_size = batch_size;
+        batch_size1 = batch_size;
         if (batch_out == (batch_num - 1)){
-            cur_batch_size = last_batch_size;
+            batch_size1 = last_batch_size;
         }
 
         printf("Outer loop: %d\n", batch_out); // FOR TESTING (delete later)
@@ -85,7 +110,9 @@ int main(int argc, char* argv[])
         fseek(file, file_cursor, SEEK_SET);
 
         // prepare batch_1 for outer loop
-        load_batch(batch_1, cur_batch_size, file);
+        load_batch(batch_1, batch_size1, file);
+
+        self_distance(batch_1, batch_size1, counter);
 
         // FOR TESTING (delete later) print batch_1 
         for (size_t line = 0; line < batch_size; line++){
@@ -100,13 +127,16 @@ int main(int argc, char* argv[])
         
         // Inner loop
         for (size_t batch_in = batch_out + 1; batch_in < batch_num; batch_in++){
+            size_t batch_size2;
             // check if it is the last batch
-            cur_batch_size = batch_size;
+            batch_size2 = batch_size;
             if (batch_in == (batch_num - 1)){
-                cur_batch_size = last_batch_size;
+                batch_size2 = last_batch_size;
             }
             printf("\tInner loop: %d\n", batch_in); // FOR TESTING (delete later)
-            load_batch(batch_2, cur_batch_size, file);
+            load_batch(batch_2, batch_size2, file);
+
+            double_distance(batch_1, batch_size1, batch_2, batch_size2, counter);
 
             // FOR TESTING (delete later) print batch_2 
             for (size_t line = 0; line < batch_size; line++){
