@@ -9,7 +9,7 @@
 #include <time.h>
 
 // A GLOBAL VAR FOR USER DEFINE BATCH_SIZE
-#define BATCH_SIZE 5
+#define BATCH_SIZE 3
 
 int main(int argc, char* argv[])
 {
@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
     size_t last_batch_size = line_num % BATCH_SIZE;
     batch_num = (last_batch_size == 0) ? line_num/BATCH_SIZE : line_num/BATCH_SIZE + 1;
     size_t batch_size = (batch_num==1) ? line_num : BATCH_SIZE;
+    size_t cur_batch_size;
     printf("Batch size = %d\nBatch num = %d\n", batch_size, batch_num);
 
     // allocate memory for storing read lines
@@ -59,13 +60,19 @@ int main(int argc, char* argv[])
     char temp_str[7]; // for string to integer
     // Outer loop
     for (size_t batch_out = 0; batch_out < batch_num; batch_out++){
+        // check if it is the last batch
+        cur_batch_size = batch_size;
+        if (batch_out == (batch_num - 1)){
+            cur_batch_size = last_batch_size;
+        }
+
         printf("Outer loop: %d\n", batch_out); // FOR TESTING (delete later)
 
         file_cursor = batch_out * batch_size * 24;
         fseek(file, file_cursor, SEEK_SET);
 
         // prepare batch_1 for outer loop
-        for (size_t line = 0; line < batch_size; line++){
+        for (size_t line = 0; line < cur_batch_size; line++){
             fgets(per_line, 25, file);
             for (size_t ix = 0; ix < 3; ++ix) {
                 memcpy(temp_str, &per_line[ix * 8], 3);
@@ -82,15 +89,20 @@ int main(int argc, char* argv[])
             }
             printf("\n");
         }
-        
+
         file_cursor = (batch_out+1) * batch_size * 24;
         fseek(file, file_cursor, SEEK_SET);
         
         // Inner loop
-        for (size_t batch_in = batch_out+1; batch_in < batch_num; batch_in++){
+        for (size_t batch_in = batch_out + 1; batch_in < batch_num; batch_in++){
+            // check if it is the last batch
+            cur_batch_size = batch_size;
+            if (batch_in == (batch_num - 1)){
+                cur_batch_size = last_batch_size;
+            }
             printf("\tInner loop: %d\n", batch_in); // FOR TESTING (delete later)
             // prepare batch_2 for inner loop
-            for (size_t line = 0; line < batch_size; line++){
+            for (size_t line = 0; line < cur_batch_size; line++){
                 fgets(per_line, 25, file);
                 for (size_t ix = 0; ix < 3; ++ix) {
                     memcpy(temp_str, &per_line[ix * 8], 3);
