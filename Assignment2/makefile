@@ -1,5 +1,12 @@
+BINS = cell_distances
+CFLAGS = -O2 -fopenmp -lm
+
 .PHONY : all
-all : cell_distances
+all : $(BINS) 
 
 cell_distances : cell_distances.c
-	gcc -o $@ $< -O2
+	gcc $(CFLAGS) -o $@ $<
+
+.PHONY : clean
+clean :
+	rm -rf $(BINS)
