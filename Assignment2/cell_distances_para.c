@@ -9,7 +9,7 @@
 #include <time.h>
 
 // A GLOBAL VAR FOR USER DEFINE BATCH_SIZE
-#define BATCH_SIZE 13
+#define BATCH_SIZE 400000
 
 void load_batch(int16_t (*batch)[3], size_t size, FILE* file)
 {
