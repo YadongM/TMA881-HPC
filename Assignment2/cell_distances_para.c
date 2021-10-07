@@ -69,14 +69,14 @@ int main(int argc, char* argv[])
     
     // read command line arguments
     int n_threads = 1;
+
     char* ptr = strchr(argv[1], 't');
     if (ptr) {
         n_threads = strtol(++ptr, NULL, 10);
     }
+    omp_set_num_threads(n_threads);
     printf("OpenMP threads that will be used (n_threads) = %d \n", n_threads);
-    
-    // 
-    // omp_set_num_threads(n_threads);
+
 
     // open the file
     char filename[] = "dis_file";
