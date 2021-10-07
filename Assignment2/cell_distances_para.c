@@ -36,13 +36,16 @@ int16_t calculate_distance(int16_t *num_1, int16_t *num_2)
 
 void self_distance(int16_t (*batch)[3], size_t len, size_t *count)
 {
+    size_t ix, jx;
+    int16_t distance;
+
     #pragma omp parallel for \
         default(none) private(ix, jx, distance) \
         shared(batch, len) reduction(+:count[:3465])
 
     for (size_t ix = 0; ix < len - 1; ix++) {
         for (size_t jx = ix + 1; jx < len; jx++) {
-            int16_t distance = calculate_distance(batch[ix], batch[jx]);
+            distance = calculate_distance(batch[ix], batch[jx]);
             count[distance] += 1;
     }
   }
@@ -50,6 +53,9 @@ void self_distance(int16_t (*batch)[3], size_t len, size_t *count)
 
 void double_distance(int16_t (*batch_1)[3], int16_t (*batch_2)[3], size_t len_1, size_t len_2, size_t *count)
 {
+    size_t ix, jx;
+    int16_t distance;
+    
     #pragma omp parallel for \
         default(none) private(ix, jx, distance) \
         shared(batch_1, batch_2, len_1, len_2) reduction(+:count[:3465])
