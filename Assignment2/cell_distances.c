@@ -31,7 +31,7 @@ int16_t calculate_distance(int16_t *num_1, int16_t *num_2)
     float temp = sqrt((num_1[0] - num_2[0]) * (num_1[0] - num_2[0])
         + (num_1[1] - num_2[1]) * (num_1[1] - num_2[1])
         + (num_1[2] - num_2[2]) * (num_1[2] - num_2[2]));
-    return (int16_t)(temp / 10 + 0.5);
+    return (int16_t)(temp / 10);
 }
 
 void self_distance(int16_t (*batch)[3], size_t len, size_t *count)
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     // omp_set_num_threads(n_threads);
 
     // open the file
-    char filename[] = "dis_file";
+    char filename[] = "cells";
     FILE* file;
     file = fopen(filename, "r");
     if (file == NULL) {
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     
     for (size_t ix = 0; ix < 3465; ++ix) {
         if (counter[ix] != 0) {
-            printf("%.2f %d\n", ix/100.0, counter[ix]);
+            printf("%05.2f %d\n", ix/100.0, counter[ix]);
         }
     }
 
