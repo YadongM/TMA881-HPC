@@ -83,10 +83,11 @@ int main(int argc, char* argv[])
             printf("\n");
         }
         
+        file_cursor = (batch_out+1) * batch_size * 24;
         fseek(file, file_cursor, SEEK_SET);
         
         // Inner loop
-        for (size_t batch_in = batch_out; batch_in < batch_num; batch_in++){
+        for (size_t batch_in = batch_out+1; batch_in < batch_num; batch_in++){
             printf("\tInner loop: %d\n", batch_in); // FOR TESTING (delete later)
             // prepare batch_2 for inner loop
             for (size_t line = 0; line < batch_size; line++){
