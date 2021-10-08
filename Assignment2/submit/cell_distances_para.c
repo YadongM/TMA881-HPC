@@ -9,6 +9,14 @@
 #include <time.h>
 
 // A GLOBAL VAR FOR USER DEFINE BATCH_SIZE
+/* We are allowed to use 5 MiB = 5 * 1024^2 bytes of memory.
+Through our implementation, Type SHORT is used to store our data and there are two blocks stored in the memory to calculate distances at the same time.
+As a result, we calculate the size of each block in the following way, 
+BATCH_SIZE = 5 * 1024^2 / (2 * 3 * 2)
+, where the first 2 is the size of SHORT, 3 means every point is three dimentional and the second 2 is the num of blocks.
+The result is around 436906.
+For simplicity and space for other variables, which is relatively small compared with the data, we take it as 400000.
+*/
 #define BATCH_SIZE 400000
 
 void load_batch(int16_t (*batch)[3], size_t size, FILE* file)
