@@ -11,6 +11,8 @@
 // A GLOBAL VAR FOR USER DEFINE BATCH_SIZE
 #define BATCH_SIZE 400000
 
+const int bz = 1 << 15;
+
 void load_batch(int16_t (*batch)[3], size_t size, FILE* file)
 {
     char per_line[25]; // for storing a line's info
@@ -26,7 +28,7 @@ void load_batch(int16_t (*batch)[3], size_t size, FILE* file)
     }
 }
 
-int16_t calculate_distance(int16_t *num_1, int16_t *num_2)
+inline int16_t calculate_distance(int16_t *num_1, int16_t *num_2)
 {
     float temp = sqrt((num_1[0] - num_2[0]) * (num_1[0] - num_2[0])
         + (num_1[1] - num_2[1]) * (num_1[1] - num_2[1])
@@ -40,8 +42,9 @@ void self_distance(int16_t (*batch)[3], size_t len, size_t *count)
         for (size_t jx = ix + 1; jx < len; jx++) {
             int16_t distance = calculate_distance(batch[ix], batch[jx]);
             count[distance] += 1;
+        }
     }
-  }
+  
 }
 
 void double_distance(int16_t (*batch_1)[3], int16_t (*batch_2)[3], size_t len_1, size_t len_2, size_t *count)
@@ -50,8 +53,8 @@ void double_distance(int16_t (*batch_1)[3], int16_t (*batch_2)[3], size_t len_1,
         for (size_t jx = 0; jx < len_2; jx++) {
             int16_t distance = calculate_distance(batch_1[ix], batch_2[jx]);
             count[distance] += 1;
+        }
     }
-  }
 }
 
 int main(int argc, char* argv[])
@@ -65,7 +68,6 @@ int main(int argc, char* argv[])
     if (ptr) {
         n_threads = strtol(++ptr, NULL, 10);
     }
-    // printf("OpenMP threads that will be used (n_threads) = %d \n", n_threads);
     
     // 
     // omp_set_num_threads(n_threads);
@@ -83,14 +85,12 @@ int main(int argc, char* argv[])
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);
     size_t line_num = (file_size+1)/24;
-    // printf("File size = %d\nLine number = %d\n", file_size, line_num);
 
     long file_cursor = ftell(file); // for store the current file position
     size_t batch_num;
     size_t last_batch_size = line_num % BATCH_SIZE;
     batch_num = (last_batch_size == 0) ? line_num/BATCH_SIZE : line_num/BATCH_SIZE + 1;
     size_t batch_size = BATCH_SIZE;
-    // printf("batch size = %d\nbatch num = %d\n", batch_size, batch_num);
 
     // allocate memory for storing read lines
     
@@ -107,8 +107,6 @@ int main(int argc, char* argv[])
             batch_size1 = last_batch_size;
         }
 
-        // printf("Outer loop: %d\n", batch_out); // FOR TESTING (delete later)
-
         file_cursor = batch_out * batch_size * 24;
         fseek(file, file_cursor, SEEK_SET);
 
@@ -117,16 +115,8 @@ int main(int argc, char* argv[])
 
         self_distance(batch_1, batch_size1, counter);
 
-        // FOR TESTING (delete later) print batch_1 
-        // for (size_t line = 0; line < batch_size; line++) {
-        //     for (size_t ix = 0; ix < 3; ++ix) {
-        //         printf("%d\t", batch_1[line][ix]);
-        //     }
-        //     printf("\n");
-        // }
-
-        file_cursor = (batch_out+1) * batch_size * 24;
-        fseek(file, file_cursor, SEEK_SET);
+//        file_cursor = (batch_out+1) * batch_size * 24;
+//        fseek(file, file_cursor, SEEK_SET);
         
         // Inner loop
         for (size_t batch_in = batch_out + 1; batch_in < batch_num; batch_in++) {
@@ -136,25 +126,17 @@ int main(int argc, char* argv[])
             if (batch_in == (batch_num - 1)) {
                 batch_size2 = last_batch_size;
             }
-            // printf("\tInner loop: %d\n", batch_in); // FOR TESTING (delete later)
+
             load_batch(batch_2, batch_size2, file);
 
             double_distance(batch_1, batch_2, batch_size1, batch_size2, counter);
-
-            // FOR TESTING (delete later) print batch_2 
-            // for (size_t line = 0; line < batch_size; line++) {
-            //     for (size_t ix = 0; ix < 3; ++ix) {
-            //         printf("\t\t%d\t", batch_2[line][ix]);
-            //     }
-            //     printf("\n");
-            // }
 
         } // end of inner loop
     } // end of outerloop
     
     for (size_t ix = 0; ix < 3465; ++ix) {
         if (counter[ix] != 0) {
-            printf("%05.2f %d\n", ix/100.0, counter[ix]);
+            printf("%05.2f %lu\n", ix/100.0, counter[ix]);
         }
     }
 

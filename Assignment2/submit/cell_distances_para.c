@@ -26,7 +26,7 @@ void load_batch(int16_t (*batch)[3], size_t size, FILE* file)
     }
 }
 
-int16_t calculate_distance(int16_t *num_1, int16_t *num_2)
+inline int16_t calculate_distance(int16_t *num_1, int16_t *num_2)
 {
     float temp = sqrt((num_1[0] - num_2[0]) * (num_1[0] - num_2[0])
         + (num_1[1] - num_2[1]) * (num_1[1] - num_2[1])
@@ -43,12 +43,12 @@ void self_distance(int16_t (*batch)[3], size_t len, size_t *count)
         default(none) private(ix, jx, distance) \
         shared(batch, len) reduction(+:count[:3465])
 
-    for (size_t ix = 0; ix < len - 1; ix++) {
-        for (size_t jx = ix + 1; jx < len; jx++) {
+    for (ix = 0; ix < len - 1; ix++) {
+        for (jx = ix + 1; jx < len; jx++) {
             distance = calculate_distance(batch[ix], batch[jx]);
             count[distance] += 1;
+        }
     }
-  }
 }
 
 void double_distance(int16_t (*batch_1)[3], int16_t (*batch_2)[3], size_t len_1, size_t len_2, size_t *count)
@@ -59,13 +59,13 @@ void double_distance(int16_t (*batch_1)[3], int16_t (*batch_2)[3], size_t len_1,
     #pragma omp parallel for \
         default(none) private(ix, jx, distance) \
         shared(batch_1, batch_2, len_1, len_2) reduction(+:count[:3465])
-        
-    for (size_t ix = 0; ix < len_1; ix++) {
-        for (size_t jx = 0; jx < len_2; jx++) {
-            int16_t distance = calculate_distance(batch_1[ix], batch_2[jx]);
+
+    for (ix = 0; ix < len_1; ix++) {
+        for (jx = 0; jx < len_2; jx++) {
+            distance = calculate_distance(batch_1[ix], batch_2[jx]);
             count[distance] += 1;
+        }
     }
-  }
 }
 
 int main(int argc, char* argv[])
@@ -75,14 +75,11 @@ int main(int argc, char* argv[])
     
     // read command line arguments
     int n_threads = 1;
-
     char* ptr = strchr(argv[1], 't');
     if (ptr) {
         n_threads = strtol(++ptr, NULL, 10);
     }
     omp_set_num_threads(n_threads);
-    // printf("OpenMP threads that will be used (n_threads) = %d \n", n_threads);
-
 
     // open the file
     char filename[] = "cells";
@@ -119,7 +116,6 @@ int main(int argc, char* argv[])
             batch_size1 = last_batch_size;
         }
 
-
         file_cursor = batch_out * batch_size * 24;
         fseek(file, file_cursor, SEEK_SET);
 
@@ -128,8 +124,8 @@ int main(int argc, char* argv[])
 
         self_distance(batch_1, batch_size1, counter);
 
-        file_cursor = (batch_out+1) * batch_size * 24;
-        fseek(file, file_cursor, SEEK_SET);
+//        file_cursor = (batch_out+1) * batch_size * 24;
+//        fseek(file, file_cursor, SEEK_SET);
         
         // Inner loop
         for (size_t batch_in = batch_out + 1; batch_in < batch_num; batch_in++) {
@@ -139,6 +135,7 @@ int main(int argc, char* argv[])
             if (batch_in == (batch_num - 1)) {
                 batch_size2 = last_batch_size;
             }
+
             load_batch(batch_2, batch_size2, file);
 
             double_distance(batch_1, batch_2, batch_size1, batch_size2, counter);
@@ -148,7 +145,7 @@ int main(int argc, char* argv[])
     
     for (size_t ix = 0; ix < 3465; ++ix) {
         if (counter[ix] != 0) {
-            printf("%05.2f %d\n", ix/100.0, counter[ix]);
+            printf("%05.2f %lu\n", ix/100.0, counter[ix]);
         }
     }
 

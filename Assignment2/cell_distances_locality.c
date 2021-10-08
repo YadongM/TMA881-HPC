@@ -11,6 +11,8 @@
 // A GLOBAL VAR FOR USER DEFINE BATCH_SIZE
 #define BATCH_SIZE 400000
 
+const int bz = 1 << 15;
+
 void load_batch(int16_t (*batch)[3], size_t size, FILE* file)
 {
     char per_line[25]; // for storing a line's info
@@ -36,34 +38,41 @@ inline int16_t calculate_distance(int16_t *num_1, int16_t *num_2)
 
 void self_distance(int16_t (*batch)[3], size_t len, size_t *count)
 {
-    size_t ix, jx;
-    int16_t distance;
+    for (size_t ib = 0; ib < len; ib += bz) {
+        size_t ie = ib + bz < len ? ib + bz : len;
+        for (size_t ix = ib; ix < ie - 1; ix++) {
+            for (size_t jx = ix + 1; jx < ie; jx++) {
+                int16_t distance = calculate_distance(batch[ix], batch[jx]);
+                count[distance] += 1;
+            }
+        }
 
-    #pragma omp parallel for \
-        default(none) private(ix, jx, distance) \
-        shared(batch, len) reduction(+:count[:3465])
-
-    for (ix = 0; ix < len - 1; ix++) {
-        for (jx = ix + 1; jx < len; jx++) {
-            distance = calculate_distance(batch[ix], batch[jx]);
-            count[distance] += 1;
+        for (size_t jb = ie; jb < len; jb += bz) {
+            size_t je = jb + bz < len ? jb + bz : len;
+            for (size_t ix = ib; ix < ie; ix++) {
+                for (size_t jx = jb; jx < je; jx++) {
+                    int16_t distance = calculate_distance(batch[ix], batch[jx]);
+                    count[distance] += 1;
+                }
+            }
         }
     }
 }
 
 void double_distance(int16_t (*batch_1)[3], int16_t (*batch_2)[3], size_t len_1, size_t len_2, size_t *count)
 {
-    size_t ix, jx;
-    int16_t distance;
-    
-    #pragma omp parallel for \
-        default(none) private(ix, jx, distance) \
-        shared(batch_1, batch_2, len_1, len_2) reduction(+:count[:3465])
+    for (size_t ib = 0; ib < len_1; ib += bz) {
+        size_t ie = ib + bz < len_1 ? ib + bz : len_1;
+        for (size_t jb = 0; jb < len_2; jb += bz) {
+            size_t je = jb + bz < len_2 ? jb + bz : len_2;
 
-    for (ix = 0; ix < len_1; ix++) {
-        for (jx = 0; jx < len_2; jx++) {
-            distance = calculate_distance(batch_1[ix], batch_2[jx]);
-            count[distance] += 1;
+            for (size_t ix = ib; ix < ie; ix++) {
+                for (size_t jx = jb; jx < je; jx++) {
+                    int16_t distance = calculate_distance(batch_1[ix], batch_2[jx]);
+                    count[distance] += 1;
+                }
+            }
+            
         }
     }
 }
@@ -79,7 +88,9 @@ int main(int argc, char* argv[])
     if (ptr) {
         n_threads = strtol(++ptr, NULL, 10);
     }
-    omp_set_num_threads(n_threads);
+    
+    // 
+    // omp_set_num_threads(n_threads);
 
     // open the file
     char filename[] = "cells";
