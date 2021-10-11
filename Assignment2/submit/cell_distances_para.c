@@ -8,14 +8,14 @@
 /* We are allowed to use 5 MiB = 5 * 1024^2 bytes of memory.
 Through our implementation, Type SHORT is used to store our data and there are two blocks stored in the memory to calculate distances at the same time.
 As a result, we calculate the size of each block in the following way, 
-BATCH_SIZE = 5 * 1024^2 / (2 * 3 * 2)
+5 * 1024^2  = 2 * 3 * 2 * BATCH_SIZE + 8 * 3 * BATCH_SIZE
 , where the first 2 is the size of SHORT, 3 means every point is three dimentional and the second 2 is the num of blocks.
-The result is around 436906.
-For simplicity and space for other variables, which is relatively small compared with the data, we take it as 400000.
+The second part after substration is the buffer size when loading text from file.
+For simplicity and space for other variables, which is relatively small compared with the data, we take it as 100000.
 */
 
 // A GLOBAL VAR FOR USER DEFINE BATCH_SIZE
-#define BATCH_SIZE 400000
+#define BATCH_SIZE 100000
 
 // Load a batch into defined arrays
 void load_batch(int16_t (*batch)[3], size_t size, char * batch_buffer)
@@ -117,6 +117,8 @@ int main(int argc, char* argv[])
     size_t last_batch_size = line_num % BATCH_SIZE;
     batch_num = (last_batch_size == 0) ? line_num/BATCH_SIZE : line_num/BATCH_SIZE + 1;
     size_t batch_size = (batch_num == 1) ? line_num : BATCH_SIZE;
+    last_batch_size = (last_batch_size == 0) ? batch_size : last_batch_size;
+
     size_t outer_batch_size, inner_batch_size; // a dynamic batchsize, should be different when encouter the last batch
     
     char * batch_buffer = (char*)malloc(sizeof(char)*batch_size*24);; // a buffer for loading a batch from text file
@@ -180,3 +182,4 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
