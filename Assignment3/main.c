@@ -52,6 +52,8 @@ int main()
         thrd_join(compute_thrds[tx], &r);
     }
     thrd_join(write_thrd, NULL);
+
+    free(result);
     
     return 0;
 }
