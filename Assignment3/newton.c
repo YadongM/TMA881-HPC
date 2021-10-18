@@ -96,29 +96,36 @@ void computer_newton3(double real, double imaginary, int *attractor, int *conver
     {
         printf("%.2f\n",real);
         printf("%.2f\n",imaginary);
-        if (conv ==1)
+        if (conv ==10)
             break;
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
             *attractor = -1;
+            // printf("fuck1\n");
             break;
         }
-        for (int ix = 0; ;++ix)
+        // printf("%d\n",attr);
+        for (int ix = 0; ix <= 2; ++ix)
         {
-            int delta_re = real - attractor_re[ix];
-            int delta_im = imaginary - attractor_im[ix];
+            double delta_re = real - attractor_re[ix];
+            double delta_im = imaginary - attractor_im[ix];
             if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
+                // printf("fuck2\n");
                 break;
             }
         }
+        // printf("%d\n",attr);
         if ( attr != -1 )
+        {
+            // printf("fuck3\n");
             break;
+        }
         iter_result(&prime_re, &prime_im, real, imaginary, 2);
-        printf("%.2f\n",prime_re);
-        printf("%.2f\n",prime_im);
+        // printf("%.2f\n",prime_re);
+        // printf("%.2f\n",prime_im);
         double norm = prime_re * prime_re + prime_im * prime_im;
         prime_re = prime_re / norm;
         prime_im = 0 - prime_im / norm;
