@@ -6,7 +6,7 @@
 #include "compute_thrd.h"
 #include "write_thrd.h"
 
-const int ATTR_DEFAULT_VALUE = 0;
+const int ATTR_DEFAULT_VALUE = -1;
 
 int nsize, nthrds, exponent;
 

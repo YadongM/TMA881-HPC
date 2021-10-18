@@ -15,13 +15,7 @@ int get_next_row_idx()
 void iter_result(double *re_re, double *re_im, double a_re, double a_im, int degree)
 {
     double temp_re = a_re, temp_im = a_im, temp;
-    for(int ix = 0; ix < degree / 2; ix++)
-    {
-        temp = temp_re * temp_re - temp_im * temp_im;
-        temp_im = 2 * temp_re * temp_im;
-        temp_re = temp;
-    }
-    if(degree % 2)
+    for(int ix = 2; ix <= degree; ix++)
     {
         temp = temp_re * a_re - temp_im * a_im;
         temp_im = temp_re * a_im + temp_im * a_re;
@@ -36,11 +30,11 @@ void computer_newton1(double real, double imaginary, int *attractor, int *conver
     double attractor_re[1] = {1}, attractor_im[1] = {0};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 0; ++ix)
@@ -54,7 +48,7 @@ void computer_newton1(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         real = 1;
         imaginary = 0;
@@ -67,11 +61,11 @@ void computer_newton2(double real, double imaginary, int *attractor, int *conver
     double attractor_re[2] = {1, -1}, attractor_im[2] = {0, 0};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 1; ++ix)
@@ -85,7 +79,7 @@ void computer_newton2(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         double norm = real * real + imaginary * imaginary;
         prime_re = real / norm;
@@ -103,11 +97,11 @@ void computer_newton3(double real, double imaginary, int *attractor, int *conver
     double attractor_re[3] = {1, -0.5, -0.5}, attractor_im[3] = {0, 0.86603, -0.86603};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 2; ++ix)
@@ -121,7 +115,7 @@ void computer_newton3(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         iter_result(&prime_re, &prime_im, real, imaginary, 2);
         double norm = prime_re * prime_re + prime_im * prime_im;
@@ -141,11 +135,11 @@ void computer_newton4(double real, double imaginary, int *attractor, int *conver
     double attractor_re[4] = {1, 0, -1, 0}, attractor_im[4] = {0, 1, 0, -1};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 3; ++ix)
@@ -159,7 +153,7 @@ void computer_newton4(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         iter_result(&prime_re, &prime_im, real, imaginary, 3);
         double norm = prime_re * prime_re + prime_im * prime_im;
@@ -179,11 +173,11 @@ void computer_newton5(double real, double imaginary, int *attractor, int *conver
     double attractor_re[5] = {1, 0.309017, -0.809017, -0.809017, 0.309017}, attractor_im[5] = {0, 0.951057, 0.587785, -0.587785, -0.951057};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 4; ++ix)
@@ -197,7 +191,7 @@ void computer_newton5(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         iter_result(&prime_re, &prime_im, real, imaginary, 4);
         double norm = prime_re * prime_re + prime_im * prime_im;
@@ -217,11 +211,11 @@ void computer_newton6(double real, double imaginary, int *attractor, int *conver
     double attractor_re[6] = {1, 0.5, -0.5, -1, -0.5, 0.5}, attractor_im[6] = {0, 0.866025, 0.866025, 0, -0.866025, -0.866025};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 5; ++ix)
@@ -235,7 +229,7 @@ void computer_newton6(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         iter_result(&prime_re, &prime_im, real, imaginary, 5);
         double norm = prime_re * prime_re + prime_im * prime_im;
@@ -252,15 +246,15 @@ void computer_newton6(double real, double imaginary, int *attractor, int *conver
 
 void computer_newton7(double real, double imaginary, int *attractor, int *convergence)
 {
-    double attractor_re[7] = {1, 0.62349, -0.222521, -0.900969, -0.900969, -0.222521, 0.62349}, 
+    double attractor_re[7] = {1, 0.62349, -0.222521, -0.900969, -0.900969, -0.222521, 0.62349},
             attractor_im[7] = {0, 0.781831, 0.974928, 0.433884, -0.433884, -0.974928, -0.781831};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 6; ++ix)
@@ -274,7 +268,7 @@ void computer_newton7(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         iter_result(&prime_re, &prime_im, real, imaginary, 6);
         double norm = prime_re * prime_re + prime_im * prime_im;
@@ -291,15 +285,15 @@ void computer_newton7(double real, double imaginary, int *attractor, int *conver
 
 void computer_newton8(double real, double imaginary, int *attractor, int *convergence)
 {
-    double attractor_re[8] = {1, 0.707107, 0, -0.707107, -1, -0.707107, 0, 0.707107}, 
+    double attractor_re[8] = {1, 0.707107, 0, -0.707107, -1, -0.707107, 0, 0.707107},
             attractor_im[8] = {0, 0.707107, 1, 0.707107, 0, -0.707107, -1, -0.707107};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 7; ++ix)
@@ -313,7 +307,7 @@ void computer_newton8(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         iter_result(&prime_re, &prime_im, real, imaginary, 7);
         double norm = prime_re * prime_re + prime_im * prime_im;
@@ -330,15 +324,15 @@ void computer_newton8(double real, double imaginary, int *attractor, int *conver
 
 void computer_newton9(double real, double imaginary, int *attractor, int *convergence)
 {
-    double attractor_re[9] = {1, 0.766044, 0.173648, -0.5, -0.939693, -0.939693, -0.5, 0.173648, 0.766044}, 
+    double attractor_re[9] = {1, 0.766044, 0.173648, -0.5, -0.939693, -0.939693, -0.5, 0.173648, 0.766044},
             attractor_im[9] = {0, 0.642788, 0.984808, 0.866025, 0.34202, -0.34202, -0.866025, -0.984808, -0.642788};
     int conv, attr;
     double temp_re, temp_im, prime_re, prime_im;
-    for (conv = 0, attr = -1; ; ++conv) 
+    for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
-            *attractor = -1;
+            *attractor = ATTR_DEFAULT_VALUE;
             break;
         }
         for (int ix = 0; ix <= 8; ++ix)
@@ -352,7 +346,7 @@ void computer_newton9(double real, double imaginary, int *attractor, int *conver
                 break;
             }
         }
-        if ( attr != -1 )
+        if ( attr != ATTR_DEFAULT_VALUE )
             break;
         iter_result(&prime_re, &prime_im, real, imaginary, 8);
         double norm = prime_re * prime_re + prime_im * prime_im;
