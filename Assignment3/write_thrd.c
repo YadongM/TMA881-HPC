@@ -10,11 +10,14 @@ int write_thrd_func(void *args)
     TYPE_ROW *result = thrd_info->shared_result;
     cnd_t *cnd = thrd_info->cnd;
 
+    mtx_t mtx;
+    mtx_init(&mtx, mtx_plain);
+
     char attractor_str[nsize*10]; // TODO:change size later
     char convergence_str[nsize*10];
     for (int ix = 0; ix < nsize; ++ix) {
         while (!atomic_load(&result[ix].done)) {
-            cnd_wait(cnd, NULL);
+            cnd_wait(cnd, &mtx);
         }
         {
             int astr_idx = 0;
@@ -34,5 +37,7 @@ int write_thrd_func(void *args)
             printf("convergence\t%d: %s\n", ix, convergence_str);
         }
     }
+
+    mtx_destroy(&mtx);
     return 0;
 }

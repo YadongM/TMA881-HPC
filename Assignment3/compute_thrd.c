@@ -375,25 +375,33 @@ void computer_newton(double x_re, double x_im, TYPE_ATTR* attractor, TYPE_CONV* 
     switch(exponent) {
     case 1:
         computer_newton1(x_re, x_im, attractor, convergence);
+        break;
     case 2:
         computer_newton2(x_re, x_im, attractor, convergence);
+        break;
     case 3:
         computer_newton3(x_re, x_im, attractor, convergence);
+        break;
     case 4:
         computer_newton4(x_re, x_im, attractor, convergence);
+        break;
     case 5:
         computer_newton5(x_re, x_im, attractor, convergence);
+        break;
     case 6:
         computer_newton6(x_re, x_im, attractor, convergence);
+        break;
     case 7:
         computer_newton7(x_re, x_im, attractor, convergence);
+        break;
     case 8:
         computer_newton8(x_re, x_im, attractor, convergence);
+        break;
     case 9:
         computer_newton9(x_re, x_im, attractor, convergence);
+        break;
 
     }
-
 }
 
 int compute_thrd_func(void *args)
