@@ -2,6 +2,7 @@
 #define _COMMON_H_
 
 #include <stdbool.h>
+#include <threads.h>
 
 typedef int TYPE_ATTR;
 typedef int TYPE_CONV;
@@ -20,6 +21,7 @@ typedef struct {
 
 typedef struct {
     TYPE_ROW *shared_result;
+    cnd_t *cnd;
 } thrd_info_t;
 
 #endif

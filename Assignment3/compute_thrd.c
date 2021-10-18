@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdatomic.h>
+#include <threads.h>
 #include "common.h"
 #include "compute_thrd.h"
 
@@ -21,6 +22,7 @@ void computer_newton(double x_re, double x_im, TYPE_ATTR* attractor, TYPE_CONV* 
 int compute_thrd_func(void *args)
 {
     const thrd_info_t *thrd_info = (thrd_info_t*) args;
+    cnd_t *cnd = thrd_info->cnd;
 
     while(true) {
         int row_idx = get_next_row_idx();
@@ -39,7 +41,9 @@ int compute_thrd_func(void *args)
             real += 4.0 / nsize;
         }
 
+        thrd_sleep(&(struct timespec){.tv_sec=0, .tv_nsec=1000}, NULL);
         atomic_store(&row->done, true); // use memory_order_seq_cst by default
+        cnd_signal(cnd);
     }
     return 0;
 }

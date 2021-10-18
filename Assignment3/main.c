@@ -23,12 +23,16 @@ int main()
     for (int ix = 0; ix < nsize; ++ix) {
         result[ix].done = false;
     }
+
+    cnd_t cnd;
+    cnd_init(&cnd);
     
     // start computing threads
     thrd_t compute_thrds[nthrds];
     thrd_info_t compute_thrds_info[nthrds];
     for (int tx = 0; tx < nthrds; ++tx) {
         compute_thrds_info[tx].shared_result = result;
+        compute_thrds_info[tx].cnd = &cnd;
         int r = thrd_create(compute_thrds+tx, compute_thrd_func, (void*) (compute_thrds_info+tx));
         if (r != thrd_success) {
             fprintf(stderr, "failed to create computing thread %d\n", tx);
@@ -40,6 +44,7 @@ int main()
     thrd_t write_thrd;
     thrd_info_t write_thrds_info;
     write_thrds_info.shared_result = result;
+    write_thrds_info.cnd = &cnd;
     int r = thrd_create(&write_thrd, write_thrd_func, (void *)&write_thrds_info);
     if (r != thrd_success) {
         fprintf(stderr, "failed to create writing thread\n");
@@ -54,6 +59,7 @@ int main()
     thrd_join(write_thrd, NULL);
 
     free(result);
+    cnd_destroy(&cnd);
     
     return 0;
 }
