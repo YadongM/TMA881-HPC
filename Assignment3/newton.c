@@ -148,7 +148,6 @@ static inline void *newton3(double x_re, double x_im,
   for ( int conv = 0; conv < max_iter; ++conv ){
     printf("%.2f ",x_re);
     printf("%.2f\n",x_im);
-
     // if the result is too close to 0 or too big
     if ( ( x_re*x_re + x_im*x_im ) < 0.000001 || 
          ( fabs(x_re) > 10000000000 || 
@@ -166,13 +165,16 @@ static inline void *newton3(double x_re, double x_im,
 
       if ( ((x_re - _r_re)*(x_re - _r_re) + (x_im - _r_im)*(x_im - _r_im)) < 0.000001) {
         *attractor = cpx_num;
-        *convergence = conv;
         break;
         }
     }
 
-    if ( *attractor != -1 )
-        break;
+    if ( *attractor != -1 ){
+      *convergence = conv;
+      printf("\nThis a test %i\n",conv);
+      printf("\nThis a test %i\n",*convergence);
+      break;
+    }
 
     double temp_re, temp_im, prime_re, prime_im;
     iter_result(&prime_re, &prime_im, x_re, x_im, 2);
@@ -188,22 +190,21 @@ static inline void *newton3(double x_re, double x_im,
 }
 
 
-
-
 static inline void *newton4(double x_re, double x_im,
                             int* attractor, int* convergence)
 {
   //We should know all root of the function
-  double root_re[] = {1,-0.5,-0.5};
-  double root_im[] = {0,0.86603,-0.86606};
+  double root_re[] = {1,0,-1,0};
+  double root_im[] = {0,1,0,-1};
 
   int max_iter = 100;
   double _r_re;
   double _r_im;
-  int attr = -1;
+  * attractor = - 1;
 
   for ( int conv = 0; conv < max_iter; ++conv ){
-
+    printf("%.2f ",x_re);
+    printf("%.2f\n",x_im);
     // if the result is too close to 0 or too big
     if ( ( x_re*x_re + x_im*x_im ) < 0.000001 || 
          ( fabs(x_re) > 10000000000 || 
@@ -220,15 +221,17 @@ static inline void *newton4(double x_re, double x_im,
       _r_im = root_im[cpx_num];
 
       if ( ((x_re - _r_re)*(x_re - _r_re) + (x_im - _r_im)*(x_im - _r_im)) < 0.000001) {
-        attr = cpx_num;
         *attractor = cpx_num;
-        *convergence = conv;
         break;
         }
     }
 
-    if ( attr != -1 )
-        break;
+    if ( *attractor != -1 ){
+      *convergence = conv;
+      printf("\nThis a test %i\n",conv);
+      printf("\nThis a test %i\n",*convergence);
+      break;
+    }
 
     double temp_re, temp_im, prime_re, prime_im;
     iter_result(&prime_re, &prime_im, x_re, x_im, 3);
@@ -246,23 +249,21 @@ static inline void *newton4(double x_re, double x_im,
 
 
 
-
-
 static inline void *newton5(double x_re, double x_im,
                             int* attractor, int* convergence)
 {
   //We should know all root of the function
-  double root_re[] = {1,-0.5,-0.5};
-  double root_im[] = {0,0.86603,-0.86606};
+  double root_re[] = {1,0.309017,-0.809017,-0.809017,0.309017};
+  double root_im[] = {0,0.951057,0.587785,-0.587785,-0.951057};
 
   int max_iter = 100;
   double _r_re;
   double _r_im;
-  int attr = -1;
+  * attractor = - 1;
 
   for ( int conv = 0; conv < max_iter; ++conv ){
-
-
+    printf("%.2f ",x_re);
+    printf("%.2f\n",x_im);
     // if the result is too close to 0 or too big
     if ( ( x_re*x_re + x_im*x_im ) < 0.000001 || 
          ( fabs(x_re) > 10000000000 || 
@@ -279,14 +280,17 @@ static inline void *newton5(double x_re, double x_im,
       _r_im = root_im[cpx_num];
 
       if ( ((x_re - _r_re)*(x_re - _r_re) + (x_im - _r_im)*(x_im - _r_im)) < 0.000001) {
-        attr = cpx_num;
         *attractor = cpx_num;
         break;
         }
     }
 
-    if ( attr != -1 )
-        break;
+    if ( *attractor != -1 ){
+      *convergence = conv;
+      printf("\nThis a test %i\n",conv);
+      printf("\nThis a test %i\n",*convergence);
+      break;
+    }
 
     double temp_re, temp_im, prime_re, prime_im;
     iter_result(&prime_re, &prime_im, x_re, x_im, 4);
@@ -304,22 +308,21 @@ static inline void *newton5(double x_re, double x_im,
 
 
 
-
-
 static inline void *newton6(double x_re, double x_im,
                             int* attractor, int* convergence)
 {
   //We should know all root of the function
-  double root_re[] = {1,-0.5,-0.5};
-  double root_im[] = {0,0.86603,-0.86606};
+  double root_re[] = {1,0.5,-0.5,-1, -0.5, 0.5};
+  double root_im[] = {0,0.866025,0.866025,0,-0.866025,-0.866025};
 
   int max_iter = 100;
   double _r_re;
   double _r_im;
-  int attr = -1;
+  * attractor = - 1;
 
   for ( int conv = 0; conv < max_iter; ++conv ){
-
+    printf("%.2f ",x_re);
+    printf("%.2f\n",x_im);
     // if the result is too close to 0 or too big
     if ( ( x_re*x_re + x_im*x_im ) < 0.000001 || 
          ( fabs(x_re) > 10000000000 || 
@@ -336,14 +339,17 @@ static inline void *newton6(double x_re, double x_im,
       _r_im = root_im[cpx_num];
 
       if ( ((x_re - _r_re)*(x_re - _r_re) + (x_im - _r_im)*(x_im - _r_im)) < 0.000001) {
-        attr = cpx_num;
         *attractor = cpx_num;
         break;
         }
     }
 
-    if ( attr != -1 )
-        break;
+    if ( *attractor != -1 ){
+      *convergence = conv;
+      printf("\nThis a test %i\n",conv);
+      printf("\nThis a test %i\n",*convergence);
+      break;
+    }
 
     double temp_re, temp_im, prime_re, prime_im;
     iter_result(&prime_re, &prime_im, x_re, x_im, 5);
@@ -360,20 +366,22 @@ static inline void *newton6(double x_re, double x_im,
 
 
 
+
 static inline void *newton7(double x_re, double x_im,
                             int* attractor, int* convergence)
 {
   //We should know all root of the function
-  double root_re[] = {1,-0.5,-0.5};
-  double root_im[] = {0,0.86603,-0.86606};
+  double root_re[] = {1,0.62349,-0.222521,-0.900969,-0.900969,-0.222521,0.62349};
+  double root_im[] = {0,0.781831,0.974928,0.433884,-0.433884,-0.974928,-0.781831};
 
   int max_iter = 100;
   double _r_re;
   double _r_im;
-  int attr = -1;
+  * attractor = - 1;
 
   for ( int conv = 0; conv < max_iter; ++conv ){
-
+    printf("%.2f ",x_re);
+    printf("%.2f\n",x_im);
     // if the result is too close to 0 or too big
     if ( ( x_re*x_re + x_im*x_im ) < 0.000001 || 
          ( fabs(x_re) > 10000000000 || 
@@ -390,14 +398,17 @@ static inline void *newton7(double x_re, double x_im,
       _r_im = root_im[cpx_num];
 
       if ( ((x_re - _r_re)*(x_re - _r_re) + (x_im - _r_im)*(x_im - _r_im)) < 0.000001) {
-        attr = cpx_num;
         *attractor = cpx_num;
         break;
         }
     }
 
-    if ( attr != -1 )
-        break;
+    if ( *attractor != -1 ){
+      *convergence = conv;
+      printf("\nThis a test %i\n",conv);
+      printf("\nThis a test %i\n",*convergence);
+      break;
+    }
 
     double temp_re, temp_im, prime_re, prime_im;
     iter_result(&prime_re, &prime_im, x_re, x_im, 6);
@@ -413,20 +424,22 @@ static inline void *newton7(double x_re, double x_im,
 }
 
 
+
 static inline void *newton8(double x_re, double x_im,
                             int* attractor, int* convergence)
 {
   //We should know all root of the function
-  double root_re[] = {1,-0.5,-0.5};
-  double root_im[] = {0,0.86603,-0.86606};
+  double root_re[] = {1,0.707107,0,-0.707107,-1,-0.707107,0,0.707107};
+  double root_im[] = {0,0.707107,1,0.707107,0,-0.707107,-1,-0.707107};
 
   int max_iter = 100;
   double _r_re;
   double _r_im;
-  int attr = -1;
+  * attractor = - 1;
 
   for ( int conv = 0; conv < max_iter; ++conv ){
-
+    printf("%.2f ",x_re);
+    printf("%.2f\n",x_im);
     // if the result is too close to 0 or too big
     if ( ( x_re*x_re + x_im*x_im ) < 0.000001 || 
          ( fabs(x_re) > 10000000000 || 
@@ -443,14 +456,17 @@ static inline void *newton8(double x_re, double x_im,
       _r_im = root_im[cpx_num];
 
       if ( ((x_re - _r_re)*(x_re - _r_re) + (x_im - _r_im)*(x_im - _r_im)) < 0.000001) {
-        attr = cpx_num;
         *attractor = cpx_num;
         break;
         }
     }
 
-    if ( attr != -1 )
-        break;
+    if ( *attractor != -1 ){
+      *convergence = conv;
+      printf("\nThis a test %i\n",conv);
+      printf("\nThis a test %i\n",*convergence);
+      break;
+    }
 
     double temp_re, temp_im, prime_re, prime_im;
     iter_result(&prime_re, &prime_im, x_re, x_im, 7);
@@ -465,20 +481,24 @@ static inline void *newton8(double x_re, double x_im,
   }
 }
 
+
+
+
 static inline void *newton9(double x_re, double x_im,
                             int* attractor, int* convergence)
 {
   //We should know all root of the function
-  double root_re[] = {1,-0.5,-0.5};
-  double root_im[] = {0,0.86603,-0.86606};
+  double root_re[] = {1,0.766044,0.173648,-0.5,-0.939693,-0.939693,-0.5,0.173648,0.766044};
+  double root_im[] = {0,0.642788,0.984808,0.866025,0.34202,-0.34202, -0.866025,-0.984808, -0.642788};
 
   int max_iter = 100;
   double _r_re;
   double _r_im;
-  int attr = -1;
+  * attractor = - 1;
 
   for ( int conv = 0; conv < max_iter; ++conv ){
-
+    printf("%.2f ",x_re);
+    printf("%.2f\n",x_im);
     // if the result is too close to 0 or too big
     if ( ( x_re*x_re + x_im*x_im ) < 0.000001 || 
          ( fabs(x_re) > 10000000000 || 
@@ -495,14 +515,17 @@ static inline void *newton9(double x_re, double x_im,
       _r_im = root_im[cpx_num];
 
       if ( ((x_re - _r_re)*(x_re - _r_re) + (x_im - _r_im)*(x_im - _r_im)) < 0.000001) {
-        attr = cpx_num;
         *attractor = cpx_num;
         break;
         }
     }
 
-    if ( attr != -1 )
-        break;
+    if ( *attractor != -1 ){
+      *convergence = conv;
+      printf("\nThis a test %i\n",conv);
+      printf("\nThis a test %i\n",*convergence);
+      break;
+    }
 
     double temp_re, temp_im, prime_re, prime_im;
     iter_result(&prime_re, &prime_im, x_re, x_im, 8);
@@ -519,15 +542,19 @@ static inline void *newton9(double x_re, double x_im,
 
 
 
+
+
+
+
 int main(){
   double x_re = 3;
   double x_im = 1;
-  int attractor;
-  int convergence;
+  int attractor = -1;
+  int convergence = 0;
 
   newton3(x_re, x_im, &attractor, &convergence);
-  printf("attractor %.2f",attractor);
-  printf("convergence %.2f",convergence);
+  printf("attractor %i",attractor);
+  printf("convergence %i",convergence);
 
 }
 
