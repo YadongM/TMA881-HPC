@@ -4,13 +4,13 @@
 void iter_result(double *re_re, double *re_im, double a_re, double a_im, int degree)
 {
     double temp_re = a_re, temp_im = a_im, temp;
-    for(int ix = 0; ix < degree / 2; ix++)
-    {
-        temp = temp_re * temp_re - temp_im * temp_im;
-        temp_im = 2 * temp_re * temp_im;
-        temp_re = temp;
-    }
-    if(degree % 2)
+    // for(int ix = 0; ix < degree / 2; ix++)
+    // {
+    //     temp = temp_re * temp_re - temp_im * temp_im;
+    //     temp_im = 2 * temp_re * temp_im;
+    //     temp_re = temp;
+    // }
+    for(int ix = 2; ix <= degree; ix++)
     {
         temp = temp_re * a_re - temp_im * a_im;
         temp_im = temp_re * a_im + temp_im * a_re;
@@ -247,6 +247,10 @@ void computer_newton7(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = -1; ; ++conv) 
     {
+        // printf("%lf\n",real);
+        // printf("%lf\n",imaginary);
+        // if (conv ==100)
+        //     break;
         if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
         {
             *attractor = -1;
@@ -360,6 +364,8 @@ int main()
 {
     double test_re = -3.0, test_im = 1.0;
     int attractor = -1, convergence = 0;
-    computer_newton3(test_re, test_im, &attractor, &convergence);
+    computer_newton7(test_re, test_im, &attractor, &convergence);
+    printf("%d\n",attractor);
+    printf("%d",convergence);
     return 1;
 }
