@@ -12,6 +12,7 @@ int nsize, nthrds, exponent;
 
 int main(int argc, char *argv[])
 {
+    // parsing arguments
     if (argc != 4){
         fprintf(stderr, "Error: Wrong Syntax. Should be in form:\n./newton -t[number_of_thread] -l[size_of_image] [exponent]\n");
         exit(0);
@@ -25,7 +26,25 @@ int main(int argc, char *argv[])
         else if (ptr_l) nsize = strtol(++ptr_l, NULL, 10);
         else exponent = strtol(argv[ix], NULL, 10);
     }
+    
+    // .ppm files
+    FILE *atr_file;
+    char atr_file_name[25];
+    sprintf(atr_file_name, "newton_attractors_x%d.ppm", exponent);
+    atr_file = fopen(atr_file_name,"w");
+    fprintf(atr_file, "P3\n");
+    fprintf(atr_file, "%d %d \n", nsize, nsize);
+    fprintf(atr_file, "255\n");
 
+    FILE *conv_file;
+    char conv_file_name[26];
+    sprintf(conv_file_name, "newton_convergence_x%d.ppm", exponent);
+    conv_file = fopen(conv_file_name,"w");
+    fprintf(conv_file, "P3\n");
+    fprintf(conv_file, "%d %d \n", nsize, nsize);
+    fprintf(conv_file, "255\n");
+
+    // 
     TYPE_ROW *result = (TYPE_ROW *)malloc(nsize * sizeof(TYPE_ROW));
     for (int ix = 0; ix < nsize; ++ix) {
         result[ix].done = false;
@@ -49,9 +68,12 @@ int main(int argc, char *argv[])
 
     // start writing thread
     thrd_t write_thrd;
-    thrd_info_t write_thrds_info;
+    write_thrd_info_t write_thrds_info;
     write_thrds_info.shared_result = result;
     write_thrds_info.cnd = &cnd;
+    write_thrds_info.atr_file = atr_file;     // files
+    write_thrds_info.conv_file = conv_file;
+    
     int r = thrd_create(&write_thrd, write_thrd_func, (void *)&write_thrds_info);
     if (r != thrd_success) {
         fprintf(stderr, "failed to create writing thread\n");
@@ -64,6 +86,10 @@ int main(int argc, char *argv[])
         thrd_join(compute_thrds[tx], &r);
     }
     thrd_join(write_thrd, NULL);
+
+    // closing the .ppm files
+    fclose(atr_file);
+    fclose(conv_file);
 
     free(result);
     cnd_destroy(&cnd);

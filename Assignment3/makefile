@@ -18,3 +18,4 @@ compute_thrd.o : compute_thrd.c compute_thrd.h common.h
 clean :
 	rm -rf $(BINS)
 	rm -rf $(OBJS)
+	rm -rf *.ppm
