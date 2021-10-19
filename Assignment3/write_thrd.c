@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdatomic.h>
 #include "common.h"
 #include "write_thrd.h"
@@ -19,7 +20,16 @@ int write_thrd_func(void *args)
     FILE *atr_file = write_thrd_info->atr_file;
     FILE *conv_file = write_thrd_info->conv_file;
 
-    char attractor_str[nsize * 12]; // TODO:change size later
+    char color_str[10][12];
+    for (int ix = 0; ix < 10; ++ix) {
+        sprintf(color_str[ix], "%03d %03d %03d ", colormap[ix][0], colormap[ix][1], colormap[ix][2]);
+    }
+    char grey_str[100][12];
+    for (int ix = 0; ix < 100; ++ix) {
+        sprintf(grey_str[ix], "%03d %03d %03d ", ix, ix, ix);
+    }
+
+    char attractor_str[nsize * 12];
     char convergence_str[nsize * 12];
 
     TYPE_ATTR *attr_row; // read a row of attractor result
@@ -31,7 +41,7 @@ int write_thrd_func(void *args)
 
     for (int ix = 0; ix < nsize; ++ix) {
         mtx_lock(write_thrd_info->mtx);
-        while (!atomic_load(&result[ix].done)) {
+        while (!result[ix].done) {
             cnd_wait(cnd, write_thrd_info->mtx);
         }
         mtx_unlock(write_thrd_info->mtx);
@@ -39,13 +49,10 @@ int write_thrd_func(void *args)
         attr_row = result[ix].attractor;
         conv_row = result[ix].convergence;
         for (int jx = 0; jx < nsize; ++jx) {
-            attr_color = colormap[attr_row[jx]];
-            for (oc = 0; oc < 3; oc++)
-                sprintf(attractor_str + 12 * jx + + 4 * oc, "%03d ", attr_color[oc]);
+            memcpy(attractor_str + 12 * jx, color_str[attr_row[jx]], 12*sizeof(char));
             
-            conv_color = 255 * (conv_row[jx] + 1) / 100;
-            for (oc = 0; oc < 3; oc++)
-                sprintf(convergence_str + 12 * jx + 4 * oc, "%03d ", conv_color);
+           // printf("%d ", conv_row[jx] + 1);
+            memcpy(convergence_str + 12 * jx, grey_str[conv_row[jx] + 1], 12*sizeof(char));
         }
         
         attractor_str[12 * nsize - 1] = '\n';

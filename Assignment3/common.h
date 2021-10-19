@@ -19,20 +19,4 @@ typedef struct {
     bool done;
 } TYPE_ROW;
 
-typedef struct {
-    TYPE_ROW *shared_result;
-    mtx_t *mtx;
-    cnd_t *cnd;
-} thrd_info_t;
-
-typedef struct {
-    TYPE_ROW *shared_result;
-    mtx_t *mtx;
-    cnd_t *cnd;
-
-    // for writing files
-    FILE *atr_file;
-    FILE *conv_file;
-} write_thrd_info_t;
-
 #endif
