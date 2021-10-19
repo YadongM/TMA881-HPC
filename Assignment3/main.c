@@ -10,6 +10,8 @@ const int ATTR_DEFAULT_VALUE = 9;
 
 int nsize, nthrds, exponent;
 
+const int MAX_CONV = 105;
+
 int main(int argc, char *argv[])
 {
     // parsing arguments

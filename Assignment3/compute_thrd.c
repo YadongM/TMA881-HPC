@@ -7,6 +7,7 @@
 
 const double UPPER_BOUND = 1e10;
 const double LOWER_BOUND = 1e-3;
+extern const int MAX_CONV;
 
 int get_next_row_idx()
 {
@@ -56,7 +57,7 @@ void computer_newton1(double real, double imaginary, int *attractor, int *conver
         real = 1;
         imaginary = 0;
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton2(double real, double imaginary, int *attractor, int *convergence)
@@ -92,7 +93,7 @@ void computer_newton2(double real, double imaginary, int *attractor, int *conver
         real -= temp_re / 2;
         imaginary -= temp_im / 2;
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton3(double real, double imaginary, int *attractor, int *convergence)
@@ -130,7 +131,7 @@ void computer_newton3(double real, double imaginary, int *attractor, int *conver
         imaginary -= temp_im / 3;
 
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton4(double real, double imaginary, int *attractor, int *convergence)
@@ -168,7 +169,7 @@ void computer_newton4(double real, double imaginary, int *attractor, int *conver
         imaginary -= temp_im / 4;
 
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton5(double real, double imaginary, int *attractor, int *convergence)
@@ -206,7 +207,7 @@ void computer_newton5(double real, double imaginary, int *attractor, int *conver
         imaginary -= temp_im / 5;
 
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton6(double real, double imaginary, int *attractor, int *convergence)
@@ -244,7 +245,7 @@ void computer_newton6(double real, double imaginary, int *attractor, int *conver
         imaginary -= temp_im / 6;
 
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton7(double real, double imaginary, int *attractor, int *convergence)
@@ -283,7 +284,7 @@ void computer_newton7(double real, double imaginary, int *attractor, int *conver
         imaginary -= temp_im / 7;
 
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton8(double real, double imaginary, int *attractor, int *convergence)
@@ -322,7 +323,7 @@ void computer_newton8(double real, double imaginary, int *attractor, int *conver
         imaginary -= temp_im / 8;
 
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton9(double real, double imaginary, int *attractor, int *convergence)
@@ -361,7 +362,7 @@ void computer_newton9(double real, double imaginary, int *attractor, int *conver
         imaginary -= temp_im / 9;
 
     }
-    *convergence = conv;
+    *convergence = conv < MAX_CONV ? conv : MAX_CONV - 1;
 }
 
 void computer_newton(double x_re, double x_im, TYPE_ATTR* attractor, TYPE_CONV* convergence)

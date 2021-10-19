@@ -5,12 +5,36 @@
 #include "common.h"
 #include "write_thrd.h"
 
-int colormap[10][3] = {
-    {158,1,66}, {216,62,79}, {244,109,67}, {253,174,97}, {254,224,139},
-    {230,245,152}, {171,221,164}, {102,194,165}, {50,136,189}, {94,79,162}
+// Define color for drawing attractor image
+char *colormap[10] = {
+    "158 001 066 ", "216 062 079 ", "244 109 067 ", "253 174 097 ", "254 224 139 ",
+    "230 245 152 ", "171 221 164 ", "102 194 165 ", "050 136 189 ", "094 079 162 "
 };
-char charColor[121];
-char charGreyColor[400];
+
+
+char *colormap_gray[105] = {
+    "005 005 005 ", "007 007 007 ", "009 009 009 ", "011 011 011 ", "013 013 013 ",
+    "017 017 017 ", "019 019 019 ", "021 021 021 ", "023 023 023 ", "025 025 025 ",
+    "029 029 029 ", "031 031 031 ", "033 033 033 ", "035 035 035 ", "037 037 037 ",
+    "041 041 041 ", "043 043 043 ", "045 045 045 ", "047 047 047 ", "049 049 049 ",
+    "053 053 053 ", "055 055 055 ", "057 057 057 ", "059 059 059 ", "061 061 061 ",
+    "065 065 065 ", "067 067 067 ", "069 069 069 ", "071 071 071 ", "073 073 073 ",
+    "077 077 077 ", "079 079 079 ", "081 081 081 ", "083 083 083 ", "085 085 085 ",
+    "089 089 089 ", "091 091 091 ", "093 093 093 ", "095 095 095 ", "097 097 097 ",
+    "101 101 101 ", "103 103 103 ", "105 105 105 ", "107 107 107 ", "109 109 109 ",
+    "113 113 113 ", "115 115 115 ", "117 117 117 ", "119 119 119 ", "121 121 121 ",
+    "125 125 125 ", "127 127 127 ", "129 129 129 ", "131 131 131 ", "133 133 133 ",
+    "137 137 137 ", "139 139 139 ", "141 141 141 ", "143 143 143 ", "145 145 145 ",
+    "149 149 149 ", "151 151 151 ", "153 153 153 ", "155 155 155 ", "157 157 157 ",
+    "161 161 161 ", "163 163 163 ", "165 165 165 ", "167 167 167 ", "169 169 169 ",
+    "173 173 173 ", "175 175 175 ", "177 177 177 ", "179 179 179 ", "181 181 181 ",
+    "185 185 185 ", "187 187 187 ", "189 189 189 ", "191 191 191 ", "193 193 193 ",
+    "197 197 197 ", "199 199 199 ", "201 201 201 ", "203 203 203 ", "205 205 205 ",
+    "209 209 209 ", "211 211 211 ", "213 213 213 ", "215 215 215 ", "217 217 217 ",
+    "221 221 221 ", "223 223 223 ", "225 225 225 ", "227 227 227 ", "229 229 229 ",
+    "233 233 233 ", "235 235 235 ", "237 237 237 ", "239 239 239 ", "241 241 241 ",
+    "245 245 245 ", "247 247 247 ", "249 249 249 ", "251 251 251 ", "253 253 253 "
+};
 
 int write_thrd_func(void *args)
 {
@@ -20,24 +44,11 @@ int write_thrd_func(void *args)
     FILE *atr_file = write_thrd_info->atr_file;
     FILE *conv_file = write_thrd_info->conv_file;
 
-    char color_str[10][12];
-    for (int ix = 0; ix < 10; ++ix) {
-        sprintf(color_str[ix], "%03d %03d %03d ", colormap[ix][0], colormap[ix][1], colormap[ix][2]);
-    }
-    char grey_str[100][12];
-    for (int ix = 0; ix < 100; ++ix) {
-        sprintf(grey_str[ix], "%03d %03d %03d ", ix, ix, ix);
-    }
-
     char attractor_str[nsize * 12];
     char convergence_str[nsize * 12];
 
     TYPE_ATTR *attr_row; // read a row of attractor result
     TYPE_CONV *conv_row; // read a row of convergence result
-
-    int *attr_color;
-    int conv_color;
-    int oc;
 
     for (int ix = 0; ix < nsize; ++ix) {
         mtx_lock(write_thrd_info->mtx);
@@ -49,10 +60,8 @@ int write_thrd_func(void *args)
         attr_row = result[ix].attractor;
         conv_row = result[ix].convergence;
         for (int jx = 0; jx < nsize; ++jx) {
-            memcpy(attractor_str + 12 * jx, color_str[attr_row[jx]], 12*sizeof(char));
-            
-           // printf("%d ", conv_row[jx] + 1);
-            memcpy(convergence_str + 12 * jx, grey_str[conv_row[jx] + 1], 12*sizeof(char));
+            memcpy(attractor_str + 12 * jx, colormap[attr_row[jx]], 12*sizeof(char));
+            memcpy(convergence_str + 12 * jx, colormap_gray[conv_row[jx]], 12*sizeof(char));
         }
         
         attractor_str[12 * nsize - 1] = '\n';
@@ -66,5 +75,5 @@ int write_thrd_func(void *args)
         fwrite(convergence_str, sizeof(char), 12 * nsize, conv_file);
     }
 
-    // return 0;
+    return 0;
 }
