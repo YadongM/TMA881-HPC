@@ -6,7 +6,7 @@ CFLAGS = -g -lpthread
 all : $(BINS) 
 
 newton : $(OBJS)
-	gcc $(CFLAGS) -o $@ $^
+	gcc $(CFLAGS) -O2 -o $@ $^
 
 main.o : main.c write_thrd.h compute_thrd.h common.h
 
@@ -19,3 +19,5 @@ clean :
 	rm -rf $(BINS)
 	rm -rf $(OBJS)
 	rm -rf *.ppm
+	rm -rf submission.tar.gz
+	rm -rf extracted pictures

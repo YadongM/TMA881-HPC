@@ -30,6 +30,7 @@ int write_thrd_func(void *args)
 
     int *attr_color;
     int conv_color;
+    int oc;
 
     for (int ix = 0; ix < nsize; ++ix) {
         while (!atomic_load(&result[ix].done)) {
@@ -40,12 +41,11 @@ int write_thrd_func(void *args)
         conv_row = result[ix].convergence;
         for (int jx = 0; jx < nsize; ++jx) {
             attr_color = colormap[attr_row[jx]];
-            sprintf(attractor_str+12*jx, "%03d ", attr_color[0]);
-            sprintf(attractor_str+12*jx+4, "%03d ", attr_color[1]);
-            sprintf(attractor_str+12*jx+8, "%03d ", attr_color[2]);
+            for (oc = 0; oc < 3; oc++)
+                sprintf(attractor_str + 12 * jx + + 4 * oc, "%03d ", attr_color[oc]);
             
             conv_color = 255 * (conv_row[jx] + 1) / 100;
-            for (int oc = 0; oc < 3; oc++)
+            for (oc = 0; oc < 3; oc++)
                 sprintf(convergence_str + 12 * jx + 4 * oc, "%03d ", conv_color);
         }
         
