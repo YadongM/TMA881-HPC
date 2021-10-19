@@ -1,12 +1,12 @@
 BINS = newton
 OBJS = main.o write_thrd.o compute_thrd.o
-CFLAGS = -g -lpthread
+CFLAGS = -O2 -lpthread
 
 .PHONY : all
 all : $(BINS) 
 
 newton : $(OBJS)
-	gcc $(CFLAGS) -O2 -o $@ $^
+	gcc $(CFLAGS) -o $@ $^
 
 main.o : main.c write_thrd.h compute_thrd.h common.h
 
