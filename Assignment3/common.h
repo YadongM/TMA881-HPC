@@ -21,11 +21,13 @@ typedef struct {
 
 typedef struct {
     TYPE_ROW *shared_result;
+    mtx_t *mtx;
     cnd_t *cnd;
 } thrd_info_t;
 
 typedef struct {
     TYPE_ROW *shared_result;
+    mtx_t *mtx;
     cnd_t *cnd;
 
     // for writing files

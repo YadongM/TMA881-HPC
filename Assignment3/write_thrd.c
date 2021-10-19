@@ -13,14 +13,11 @@ char charGreyColor[400];
 
 int write_thrd_func(void *args)
 {
-    const write_thrd_info_t *write_thrd_info = (write_thrd_info_t*) args;
+    write_thrd_info_t *write_thrd_info = (write_thrd_info_t*) args;
     TYPE_ROW *result = write_thrd_info->shared_result;
     cnd_t *cnd = write_thrd_info->cnd;
     FILE *atr_file = write_thrd_info->atr_file;
     FILE *conv_file = write_thrd_info->conv_file;
-
-    mtx_t mtx;
-    mtx_init(&mtx, mtx_plain);
 
     char attractor_str[nsize * 12]; // TODO:change size later
     char convergence_str[nsize * 12];
@@ -33,9 +30,11 @@ int write_thrd_func(void *args)
     int oc;
 
     for (int ix = 0; ix < nsize; ++ix) {
+        mtx_lock(write_thrd_info->mtx);
         while (!atomic_load(&result[ix].done)) {
-            cnd_wait(cnd, &mtx);
+            cnd_wait(cnd, write_thrd_info->mtx);
         }
+        mtx_unlock(write_thrd_info->mtx);
 
         attr_row = result[ix].attractor;
         conv_row = result[ix].convergence;
@@ -60,6 +59,5 @@ int write_thrd_func(void *args)
         fwrite(convergence_str, sizeof(char), 12 * nsize, conv_file);
     }
 
-    mtx_destroy(&mtx);
     // return 0;
 }

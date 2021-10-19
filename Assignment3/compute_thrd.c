@@ -421,7 +421,11 @@ int compute_thrd_func(void *args)
         }
 
         thrd_sleep(&(struct timespec){.tv_sec=0, .tv_nsec=1000}, NULL);
+
+        mtx_lock(thrd_info->mtx);
         atomic_store(&row->done, true); // use memory_order_seq_cst by default
+        mtx_unlock(thrd_info->mtx);
+
         cnd_signal(cnd);
     }
     return 0;

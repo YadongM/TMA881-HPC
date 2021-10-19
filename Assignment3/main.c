@@ -50,6 +50,9 @@ int main(int argc, char *argv[])
         result[ix].done = false;
     }
 
+    mtx_t mtx;
+    mtx_init(&mtx, mtx_plain);
+
     cnd_t cnd;
     cnd_init(&cnd);
     
@@ -58,6 +61,7 @@ int main(int argc, char *argv[])
     thrd_info_t compute_thrds_info[nthrds];
     for (int tx = 0; tx < nthrds; ++tx) {
         compute_thrds_info[tx].shared_result = result;
+        compute_thrds_info[tx].mtx = &mtx;
         compute_thrds_info[tx].cnd = &cnd;
         int r = thrd_create(compute_thrds+tx, compute_thrd_func, (void*) (compute_thrds_info+tx));
         if (r != thrd_success) {
@@ -70,6 +74,7 @@ int main(int argc, char *argv[])
     thrd_t write_thrd;
     write_thrd_info_t write_thrds_info;
     write_thrds_info.shared_result = result;
+    write_thrds_info.mtx = &mtx;
     write_thrds_info.cnd = &cnd;
     write_thrds_info.atr_file = atr_file;     // files
     write_thrds_info.conv_file = conv_file;
@@ -93,6 +98,7 @@ int main(int argc, char *argv[])
 
     free(result);
     cnd_destroy(&cnd);
+    mtx_destroy(&mtx);
     
     return 0;
 }
