@@ -5,6 +5,9 @@
 #include "common.h"
 #include "compute_thrd.h"
 
+const double UPPER_BOUND = 1e10;
+const double LOWER_BOUND = 1e-3;
+
 int get_next_row_idx()
 {
     static atomic_int i = 0;
@@ -32,7 +35,7 @@ void computer_newton1(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -41,7 +44,7 @@ void computer_newton1(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -63,7 +66,7 @@ void computer_newton2(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -72,7 +75,7 @@ void computer_newton2(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -99,7 +102,7 @@ void computer_newton3(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -108,7 +111,7 @@ void computer_newton3(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -137,7 +140,7 @@ void computer_newton4(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -146,7 +149,7 @@ void computer_newton4(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -175,7 +178,7 @@ void computer_newton5(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -184,7 +187,7 @@ void computer_newton5(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -213,7 +216,7 @@ void computer_newton6(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -222,7 +225,7 @@ void computer_newton6(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -252,7 +255,7 @@ void computer_newton7(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -261,7 +264,7 @@ void computer_newton7(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -291,7 +294,7 @@ void computer_newton8(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -300,7 +303,7 @@ void computer_newton8(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
@@ -330,7 +333,7 @@ void computer_newton9(double real, double imaginary, int *attractor, int *conver
     double temp_re, temp_im, prime_re, prime_im;
     for (conv = 0, attr = ATTR_DEFAULT_VALUE; ; ++conv)
     {
-        if ((real * real + imaginary * imaginary) < 0.000001 || real > 10000000000 || real < -10000000000 || imaginary > 10000000000 || imaginary < -10000000000)
+        if ((real * real + imaginary * imaginary) < LOWER_BOUND || real > UPPER_BOUND || real < -UPPER_BOUND || imaginary > UPPER_BOUND || imaginary < -UPPER_BOUND)
         {
             *attractor = ATTR_DEFAULT_VALUE;
             break;
@@ -339,7 +342,7 @@ void computer_newton9(double real, double imaginary, int *attractor, int *conver
         {
             double delta_re = real - attractor_re[ix];
             double delta_im = imaginary - attractor_im[ix];
-            if ((delta_re * delta_re + delta_im * delta_im) < 0.000001)
+            if ((delta_re * delta_re + delta_im * delta_im) < LOWER_BOUND)
             {
                 attr = ix + 1;
                 *attractor = ix + 1;
