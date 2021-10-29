@@ -43,8 +43,9 @@ int main(int argc, char *argv[])
 
     if (mpi_rank == scatter_root) {
         FILE *file;
-        char line[100];
+        long f_size;
         char filename[] = "init";
+
         file = fopen(filename, "r");
         if (file == NULL)
         {
@@ -52,10 +53,15 @@ int main(int argc, char *argv[])
             exit(0);
         }
 
-        fseek(file, 0, SEEK_SET); // to the start of the file
+        fseek(file, 0, SEEK_END);
+        f_size = ftell(file);
+        rewind(file);
+        char buffer[f_size];
+        fread(buffer, 1, f_size, file);
+
         //read the the width and the height
-        fgets(line, sizeof(line), file);
-        sscanf(line, "%d %d", &width, &height);
+        char *pch = strtok(buffer, "\n");
+        sscanf(pch, "%d %d", &width, &height);
 
         //store initial box values
         full_matrix = (float *)malloc(sizeof(float)*width*height);
@@ -64,10 +70,12 @@ int main(int argc, char *argv[])
         //read the rest
         int row = 0, col = 0;
         float temp = 0;
-        while (fgets(line, sizeof(line), file) != NULL)
+        pch = strtok(NULL, "\n");
+        while (pch != NULL)
         {
-            sscanf(line, "%d %d %f", &col, &row, &temp);
+            sscanf(pch, "%d %d %f", &col, &row, &temp);
             full_matrix[row * width + col] = temp;
+            pch = strtok(NULL, "\n");
         }
         // close the file
         fclose(file);
