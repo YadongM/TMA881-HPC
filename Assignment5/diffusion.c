@@ -58,16 +58,6 @@ int main(int argc, char *argv[])
         sscanf(line, "%d %d", &width, &height);
 
         //store initial box values
-    //    float *data = (float *)malloc(sizeof(float)*width*height);
-    //    float **full_matrix = (float **)malloc(sizeof(float *)*height);
-    //    for (size_t ix = 0, jx = 0; ix < height; ++ix, jx+=width) {
-    //        full_matrix[ix] = data + jx;
-    //        for (size_t iy = 0; iy < width; ++iy)
-    //        {
-    //            full_matrix[ix][iy] = 0;
-    //        }
-    //    }
-        
         full_matrix = (float *)malloc(sizeof(float)*width*height);
         memset(full_matrix, 0, sizeof(float)*width*height);
 
@@ -123,10 +113,8 @@ int main(int argc, char *argv[])
 
 ////////////////////////////////////////////////////////////////////////////////
     loc_lines = len/width;
-    //fprintf(stderr, "loc_lines %d\n", loc_lines);
+//    fprintf(stderr, "loc_lines %d\n", loc_lines);
 
-//    float loc_matrix[loc_lines+2][width+2];
-//    float loc_matrix_bk[loc_lines+2][width+2];
     float (*loc_matrix)[width+2] = (float (*)[width+2])malloc((loc_lines+2)*sizeof(float[width+2]));
     float (*loc_matrix_bk)[width+2] = (float (*)[width+2])malloc((loc_lines+2)*sizeof(float[width+2]));
     float (*loc_matrix_temp)[width+2] = NULL;
@@ -172,8 +160,6 @@ int main(int argc, char *argv[])
         loc_matrix_temp = loc_matrix_bk;
         loc_matrix_bk = loc_matrix;
         loc_matrix = loc_matrix_temp;
-//        memcpy(loc_matrix, loc_matrix_bk, sizeof(float)*(loc_lines+2)*(width+2));
-
     }
 
     // TODO: debug
