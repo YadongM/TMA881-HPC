@@ -38,8 +38,6 @@ int main(int argc, char *argv[])
     }
 
     fseek(file, 0, SEEK_SET); // to the start of the file
-    int row = 0, col = 0;
-    float temp = 0.;
     //read the the width and the height
     fgets(line, sizeof(line), file);
     sscanf(line, "%d %d", &width, &height);
@@ -47,14 +45,16 @@ int main(int argc, char *argv[])
 
     // ========================= Store the intial box to memory =========================
     float *init_box = malloc(sz * sizeof(float));
-    for (size_t ix = 0; ix < width; ++ix)
+    for (size_t row = 0; row < height; ++row)
     {
-        for (size_t iy = 0; iy < height; ++iy)
+        for (size_t col = 0; col < width; ++col)
         {
-            init_box[ix * width + iy] = 0;
+            init_box[row * width + col] = 0;
         }
     }
     //read the rest
+    int row = 0, col = 0;
+    float temp = 0.;
     while (fgets(line, sizeof(line), file) != NULL)
     {
         sscanf(line, "%d %d %f", &col, &row, &temp);
@@ -206,11 +206,13 @@ int main(int argc, char *argv[])
 
     const size_t global_sz[] = {width, height}; // a global size, will be used both for calculate diffusion and abs diff
     // =========================================================== Diffuse iterations ===========================================================
+    cl_uint old_box_status = 0;
+    cl_uint new_box_status = 1;
     for (size_t iter = 0; iter < iter_num; ++iter)
     {
         // Set Kernels
-        clSetKernelArg(kernel_diffuse_one_iter, 0, sizeof(cl_mem), &old_box);
-        clSetKernelArg(kernel_diffuse_one_iter, 1, sizeof(cl_mem), &new_box);
+        clSetKernelArg(kernel_diffuse_one_iter, old_box_status, sizeof(cl_mem), &old_box);
+        clSetKernelArg(kernel_diffuse_one_iter, new_box_status, sizeof(cl_mem), &new_box);
         clSetKernelArg(kernel_diffuse_one_iter, 2, sizeof(float), &diff_const);
         clSetKernelArg(kernel_diffuse_one_iter, 3, sizeof(int), &width);
         clSetKernelArg(kernel_diffuse_one_iter, 4, sizeof(int), &height);
@@ -228,7 +230,9 @@ int main(int argc, char *argv[])
             fprintf(stderr, "cannot finish queue\n");
             return 1;
         }
-        old_box = new_box;
+        // swap the status of two buffer
+        old_box_status = old_box_status == 0 ? 1 : 0;
+        new_box_status = new_box_status == 1 ? 0 : 1;
     }
 
     // =========================================================== Compute average ===========================================================
@@ -247,7 +251,10 @@ int main(int argc, char *argv[])
     }
 
     const cl_int sz_clint = (cl_int)sz;
-    clSetKernelArg(kernel_reduction_sum, 0, sizeof(cl_mem), &new_box);
+    if (old_box_status == 1)
+        clSetKernelArg(kernel_reduction_sum, 0, sizeof(cl_mem), &new_box);
+    else
+        clSetKernelArg(kernel_reduction_sum, 0, sizeof(cl_mem), &old_box);
     clSetKernelArg(kernel_reduction_sum, 1, local_redsz * sizeof(float), NULL);
     clSetKernelArg(kernel_reduction_sum, 2, sizeof(cl_int), &sz_clint);
     clSetKernelArg(kernel_reduction_sum, 3, sizeof(cl_mem), &output_buffer_sum);
@@ -326,20 +333,19 @@ int main(int argc, char *argv[])
     for (size_t ix = 0; ix < nmb_redgps; ++ix)
         sum_diff_total += reduced_output_diff[ix];
 
-    //compute average temperature
+    // compute average absolute differene temperature
     float average_abs_diff = sum_diff_total / sz;
 
     printf("average absolute difference: %f\n", average_abs_diff);
-
 
     // Release Resources
     clReleaseMemObject(old_box);
     clReleaseMemObject(new_box);
     clReleaseMemObject(output_buffer_sum);
-    clReleaseProgram(program);
     clReleaseKernel(kernel_diffuse_one_iter);
     clReleaseKernel(kernel_reduction_sum);
-
+    clReleaseKernel(kernel_compute_abs_diff);
+    clReleaseProgram(program);
     clReleaseCommandQueue(command_queue);
     clReleaseContext(context);
     free(init_box);
