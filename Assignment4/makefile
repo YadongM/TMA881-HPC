@@ -1,6 +1,6 @@
 CC := gcc
 BINS = diffusion
-CFLAGS = -O2
+CFLAGS = -O2 -lOpenCL
 
 .PHONY : all
 all : $(BINS) 
