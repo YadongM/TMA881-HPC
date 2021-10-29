@@ -196,15 +196,15 @@ int main(int argc, char *argv[])
         scatter_root, MPI_COMM_WORLD);
   
     if (mpi_rank == scatter_root) {
-        printf("absolute difference of each temperature: \n");
+        int abs_sum = 0;
         for (size_t ix = 0; ix < height; ++ix)
         {
             for (size_t iy = 0; iy < width; iy++)
             {
-                printf("%.2f\t", fabs(full_matrix[ix * width + iy] - avg));
+                abs_sum += fabs(full_matrix[ix * width + iy] - avg);
             }
-            printf("\n");
         }
+        printf("absolute difference of each temperature: %f\n", (float)abs_sum/(width*height));
     }
 
     MPI_Finalize();
