@@ -21,9 +21,10 @@ __kernel void diffuse_one_iter(
 
 __kernel void reduction_sum(
     __global float *box,
-    __local float* scratch,
+    __local float *scratch,
     __const int sz,
-    __global float* group_sums)
+    __global float* group_sums
+    )
 {
     int gsz = get_global_size(0);
     int gix = get_global_id(0);
@@ -50,7 +51,8 @@ __kernel void reduction_sum(
 __kernel void compute_abs_diff(
     __global float * diff,
     const float average,
-    const int width)
+    const int width
+    )
 {
     int col = get_global_id(0);
     int row = get_global_id(1);
